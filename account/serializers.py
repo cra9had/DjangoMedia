@@ -9,25 +9,33 @@ from rest_framework.exceptions import APIException
 from django.core.mail import send_mail
 
 
+class TokenSerializer(serializers.Serializer):
+    token = serializers.CharField(max_length=64, write_only=True)
+    
+    def validate(self, data):
+        key = data["token"]
+        try:
+            token = Token.objects.get(key=key)
+            if not token.user.is_active:
+                raise ValidationError("User is not active")
+        except Token.DoesNotExist:
+            raise ValidationError("Incorrect token")
+
+        return data
+
+
 class LoginSerializer(serializers.Serializer):
-    email = serializers.CharField(max_length=255)
-    password = serializers.CharField(max_length=128, write_only=True)
+    email = serializers.CharField(max_length=255, error_messages={
+            "blank": "Нужно ввести почту",
+        },)
+    password = serializers.CharField(max_length=128, write_only=True, error_messages={
+            "blank": "Нужно ввести пароль",
+        },)
     token = serializers.CharField(max_length=255, read_only=True)
 
     def validate(self, data):
         email = data.get('email', None)
         password = data.get('password', None)
-
-        if email is None:
-            raise serializers.ValidationError(
-                'An email address is required to log in.'
-            )
-        email = email.lower()
-        if password is None:
-            raise serializers.ValidationError(
-                'A password is required to log in.'
-            )
-
         user = authenticate(username=email, password=password)
 
         if not user:

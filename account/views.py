@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import RegisterUserSerializer, LoginSerializer
+from .serializers import RegisterUserSerializer, LoginSerializer, TokenSerializer
 from .models import User
 from django.shortcuts import HttpResponse, Http404
 
@@ -16,6 +16,16 @@ def activation(request, key):
         user.save()
         return HttpResponse("Email activated")
     return Http404()
+
+
+class TokenAPIView(APIView):
+    permission_classes = (AllowAny,)
+    serializer_class = TokenSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({"success": True}, status=status.HTTP_200_OK)
 
 
 class LoginAPIView(APIView):

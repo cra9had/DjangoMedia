@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
+import environ
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -18,13 +19,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
+env = environ.Env(
+            DEBUG=(bool, True)
+            )
+environ.Env.read_env()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i=)g(#c)qm6#hlm05_ysp&!4j3_8t%^(d*nw$_nv$$&4k+0tze'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['89.108.77.215', '2a00:f940:2:4:2::4164', '89-108-77-215.cloudvps.regruhosting.ru'] if not DEVELOPMENT else [] 
 
 # Application definition
 
@@ -61,7 +67,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8080',
     'http://localhost:8080',
-]
+    ] if DEVELOPMENT else ['http://89.108.77.215', 'http://89-108-77-215.cloudvps.regruhosting.ru']
 
 ROOT_URLCONF = 'mediasite.urls'
 
@@ -87,10 +93,7 @@ WSGI_APPLICATION = 'mediasite.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db()
 }
 
 REST_FRAMEWORK = {

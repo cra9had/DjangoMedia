@@ -138,11 +138,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = 'mediatags@mail.ru'
+EMAIL_HOST_PASSWORD = "dtXvAFVLkmeikrKzhv3V"
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'mediainternettags@gmail.com'
-EMAIL_HOST_PASSWORD = "3'RdWM*5d*+k"
+EMAIL_USE_SSL = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/

@@ -72,7 +72,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             Token.objects.create(user=user)
             send_mail('Регистрация',
                       'Перейдите по ссылке, чтобы подтвердить регистрацию: ' + activation_url,
-                      'mediaTeg@gmail.com', [user.email], fail_silently=False)
+                      'mediatags@mail.ru', [user.email], fail_silently=False)
             return validated_data
         except IntegrityError as e:
             raise APIException(e)

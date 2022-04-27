@@ -1,3 +1,7 @@
+import operator
+from functools import reduce
+
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -19,7 +23,7 @@ class GetMediaContentAPIView(APIView):
         bodies = []
         for tag in tags:
             bodies.append(tag["body"])
-        return MediaContent.objects.filter(tags__body__in=bodies).distinct()
+        return MediaContent.objects.filter(reduce(operator.and_, (Q(tags__body__in=[body]) for body in bodies))).distinct()
 
     def post(self, request):
         try:

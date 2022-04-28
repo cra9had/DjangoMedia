@@ -20,17 +20,10 @@ class GetMediaContentAPIView(APIView):
 
     def get_queryset(self):
         tags = self.request.data.get("tags")
-        tag_ids = []
+        objects = MediaContent.objects
         for tag in tags:
-            try:
-                tag_id = Tag.objects.get(body=tag["body"]).id
-            except Tag.DoesNotExist:
-                continue
-            tag_ids.append(tag_id)
-        print(reduce(operator.and_, (Q(tags__in=[tag_id]) for tag_id in tag_ids)))
-        # return MediaContent.objects.filter(reduce(operator.and_, (Q(tags__body__contains=body) for body in bodies))).distinct()
-        # return MediaContent.objects.filter(reduce(operator.and_, (Q(tags__in=[tag_id]) for tag_id in tag_ids))).distinct()
-        return MediaContent.objects.filter(tags__id__in=tag_ids).distinct()
+            objects = objects.filter(tags__body__contains=tag["body"])
+        return objects.distinct()
 
     def post(self, request):
         try:

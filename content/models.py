@@ -20,4 +20,4 @@ class MediaContent(models.Model):
     tags = models.ManyToManyField(Tag, verbose_name="Теги")
 
     def __str__(self):
-        return self.media_file.name[:40]
+        return self.title

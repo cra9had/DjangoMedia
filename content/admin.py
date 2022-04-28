@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tag, MediaContent
+from .models import Tag, MediaContent, ChosenMediaContent
 
 
 class ContentInline(admin.TabularInline):
@@ -16,3 +16,8 @@ class TagModelAdmin(admin.ModelAdmin):
 @admin.register(MediaContent)
 class ContentModelAdmin(admin.ModelAdmin):
     filter_horizontal = ('tags',)
+
+
+@admin.register(ChosenMediaContent)
+class ChosenMediaAdminModel(admin.ModelAdmin):
+    search_fields = ('user', 'media_content', 'tags')

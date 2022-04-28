@@ -1,17 +1,31 @@
-import operator
-from functools import reduce
-
-from django.db.models import Q
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Tag, MediaContent
+from .models import Tag, MediaContent, ChosenMediaContent
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import TagFilter
-from .serializers import TagSerializer, MediaContentSerializer
+from .serializers import TagSerializer, MediaContentSerializer, ChoiceMediaContentSerializer, GetChosenMediaSerializer
+
+
+class ChoiceMediaAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ChoiceMediaContentSerializer
+
+    def get_queryset(self):
+        return ChosenMediaContent.objects.filter(user=self.request.user)
+
+    def get(self, request):
+        serializer = GetChosenMediaSerializer(self.get_queryset(), many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, context={"user": request.user})
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response()
 
 
 class GetMediaContentAPIView(APIView):

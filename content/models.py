@@ -1,4 +1,9 @@
+from django.apps import apps
+from django.contrib.auth import get_user_model
 from django.db import models
+
+
+User = get_user_model()
 
 
 class Tag(models.Model):
@@ -21,3 +26,12 @@ class MediaContent(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ChosenMediaContent(models.Model):
+    media_content = models.ForeignKey(MediaContent, on_delete=models.CASCADE, verbose_name="Выбранный медиа-контент")
+    tags = models.ManyToManyField(Tag, verbose_name="Выбранные теги")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.pk}. {self.user.email} | {self.media_content.title}"

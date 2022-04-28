@@ -20,7 +20,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 env = environ.Env(
-            DEBUG=(bool, True)
+            DEBUG=(bool, True),
+            DEVELOPMENT=(bool, False)
+            
             )
 environ.Env.read_env()
 
@@ -35,7 +37,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['89.108.77.215', '2a00:f940:2:4:2::4164', '89-108-77-215.cloudvps.regruhosting.ru'] if not DEVELOPMENT else [] 
 
 # Application definition
-
+print(ALLOWED_HOSTS, type(DEVELOPMENT))
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
